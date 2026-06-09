@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="NK-Business, boutique premium d'accessoires.">
     <title>NK-Business | Boutique d'accessoires</title>
-    <link rel="stylesheet" href="styles.css?v=20260609">
+    <link rel="stylesheet" href="styles.css?v=20260609b">
   </head>
   <body>
     <header class="site-header">
@@ -137,8 +137,13 @@
         <label for="productCategory">Catégorie</label>
         <select id="productCategory" required></select>
 
-        <label for="productImage">URL image</label>
-        <input id="productImage" type="url" placeholder="https://...">
+        <label for="productImage">Télécharger une image</label>
+        <div class="file-upload">
+          <input id="productImage" class="file-input" type="file" accept="image/*">
+          <label class="file-trigger" for="productImage">Choisir un fichier</label>
+          <span id="productFileName">Aucun fichier sélectionné</span>
+        </div>
+        <p class="file-note">Choisissez un fichier depuis votre appareil. En modification, laissez vide pour garder l'image actuelle.</p>
 
         <div class="form-actions">
           <button class="checkout-button" type="submit" id="productSubmit">Ajouter</button>
@@ -151,6 +156,6 @@
 
     <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
 
-    <script src="app.js?v=20260609" defer></script>
+    <script src="app.js?v=20260609b" defer></script>
   </body>
 </html>

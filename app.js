@@ -95,6 +95,7 @@ const productName = document.getElementById("productName");
 const productPrice = document.getElementById("productPrice");
 const productCategory = document.getElementById("productCategory");
 const productImage = document.getElementById("productImage");
+const productFileName = document.getElementById("productFileName");
 const productSubmit = document.getElementById("productSubmit");
 const productCancel = document.getElementById("productCancel");
 const adminList = document.getElementById("adminList");
@@ -127,6 +128,9 @@ adminEntry.addEventListener("click", openAdminGate);
 adminGateClose.addEventListener("click", closeAdminGate);
 adminClose.addEventListener("click", closeAdminPanel);
 productCancel.addEventListener("click", resetAdminForm);
+productImage.addEventListener("change", () => {
+  productFileName.textContent = productImage.files?.[0]?.name || "Aucun fichier sélectionné";
+});
 
 adminGate.addEventListener("click", (event) => {
   if (event.target === adminGate) closeAdminGate();
@@ -148,22 +152,32 @@ adminLoginForm.addEventListener("submit", (event) => {
   showToast("Mot de passe incorrect.");
 });
 
-productForm.addEventListener("submit", (event) => {
+productForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const name = productName.value.trim();
   const price = Number(productPrice.value);
   const category = productCategory.value;
-  const imageUrl = productImage.value.trim();
+  const imageFile = productImage.files?.[0] || null;
 
   if (!name || !category || !Number.isFinite(price) || price <= 0) {
     showToast("Vérifiez les informations du produit.");
     return;
   }
 
+  let imageData = "";
+  if (imageFile) {
+    try {
+      imageData = await prepareUploadedImage(imageFile);
+    } catch (error) {
+      showToast(error.message || "Image non valide.");
+      return;
+    }
+  }
+
   if (editingProductId) {
     products = products.map((product) => (
       product.id === editingProductId
-        ? { ...product, name, price, category, imageUrl }
+        ? { ...product, name, price, category, imageData: imageData || product.imageData || "" }
         : product
     ));
     showToast("Produit modifié.");
@@ -175,7 +189,7 @@ productForm.addEventListener("submit", (event) => {
         name,
         price,
         category,
-        imageUrl
+        imageData
       }
     ];
     showToast("Produit ajouté.");
@@ -231,6 +245,38 @@ function makeId() {
 
 function formatMoney(value) {
   return `${Math.round(Number(value) || 0)} $`;
+}
+
+function prepareUploadedImage(file) {
+  if (!file.type.startsWith("image/")) {
+    return Promise.reject(new Error("Veuillez choisir un fichier image."));
+  }
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Impossible de lire l'image."));
+    reader.onload = () => {
+      const image = new Image();
+      image.onerror = () => reject(new Error("Image non valide."));
+      image.onload = () => {
+        const maxSize = 1200;
+        const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+        const width = Math.max(1, Math.round(image.width * scale));
+        const height = Math.max(1, Math.round(image.height * scale));
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const context = canvas.getContext("2d");
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, width, height);
+        context.drawImage(image, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", 0.86));
+      };
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 function populateCategorySelect() {
@@ -332,8 +378,8 @@ function createProductCard(product) {
 }
 
 function applyProductImage(element, product) {
-  if (product.imageUrl) {
-    element.style.backgroundImage = `url("${product.imageUrl.replaceAll('"', "")}")`;
+  if (product.imageData) {
+    element.style.backgroundImage = `url("${product.imageData}")`;
     element.style.backgroundSize = "cover";
     element.style.backgroundPosition = "center";
     return;
@@ -548,6 +594,7 @@ function resetAdminForm() {
   productPrice.value = "";
   productCategory.value = categories[0];
   productImage.value = "";
+  productFileName.textContent = "Aucun fichier sélectionné";
   productSubmit.textContent = "Ajouter";
 }
 
@@ -593,7 +640,8 @@ function editProduct(id) {
   productName.value = product.name;
   productPrice.value = product.price;
   productCategory.value = product.category;
-  productImage.value = product.imageUrl || "";
+  productImage.value = "";
+  productFileName.textContent = "Aucun nouveau fichier sélectionné";
   productSubmit.textContent = "Modifier";
 }
 
