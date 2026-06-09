@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="NK-Business, boutique premium d'accessoires.">
+    <title>NK-Business | Boutique d'accessoires</title>
+    <link rel="stylesheet" href="styles.css?v=20260609">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#accueil" aria-label="NK-Business accueil">
+          <span class="brand-mark">NK</span>
+          <span>NK-Business</span>
+        </a>
+
+        <nav class="main-nav" aria-label="Navigation principale">
+          <a href="#accueil">Accueil</a>
+          <a href="#categories">Catégories</a>
+          <button type="button" data-cart-open>Panier</button>
+        </nav>
+
+        <div class="header-actions">
+          <button class="icon-button" id="themeToggle" type="button" aria-label="Changer le thème" title="Thème">
+            <span aria-hidden="true">☾</span>
+          </button>
+          <button class="cart-button" id="cartButton" type="button" aria-label="Ouvrir le panier" data-cart-open>
+            <span class="bag-icon" aria-hidden="true"></span>
+            <span class="cart-count" id="cartCount">0</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="accueil">
+        <div class="hero-image" aria-hidden="true"></div>
+        <div class="hero-overlay" aria-hidden="true"></div>
+        <div class="hero-content">
+          <span class="eyebrow">Accessoires premium</span>
+          <h1>Bienvenue chez NK-Business</h1>
+          <p>NK-Business, vos articles de qualité disponibles en quantité, commandez chez nous en toute simplicité !</p>
+          <a class="primary-cta" href="#boutique">Explorer la boutique</a>
+        </div>
+      </section>
+
+      <section class="category-band" id="categories">
+        <div class="section-shell">
+          <div class="section-heading compact">
+            <span class="eyebrow">Collection</span>
+            <h2>Catégories</h2>
+          </div>
+          <div class="category-filters" id="categoryFilters" aria-label="Filtrer les produits"></div>
+        </div>
+      </section>
+
+      <section class="shop-section" id="boutique">
+        <div class="section-shell">
+          <div class="section-heading">
+            <span class="eyebrow">Vitrine</span>
+            <h2>Articles disponibles</h2>
+          </div>
+          <div class="products-grid" id="productsGrid"></div>
+        </div>
+      </section>
+    </main>
+
+    <button class="admin-entry" id="adminEntry" type="button">Admin</button>
+
+    <div class="screen-overlay" id="cartOverlay" data-cart-close></div>
+    <aside class="cart-panel" id="cartPanel" aria-labelledby="cartTitle" aria-hidden="true">
+      <div class="panel-header">
+        <div>
+          <span class="eyebrow">Commande</span>
+          <h2 id="cartTitle">Panier</h2>
+        </div>
+        <button class="icon-button" type="button" aria-label="Fermer le panier" data-cart-close>
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-total">
+        <span>Total</span>
+        <strong id="cartTotal">0 $</strong>
+      </div>
+      <button class="checkout-button" id="checkoutButton" type="button">Acheter maintenant</button>
+    </aside>
+
+    <div class="image-modal" id="imageModal" aria-hidden="true">
+      <button class="modal-close icon-button" id="modalClose" type="button" aria-label="Fermer l'image">
+        <span aria-hidden="true">×</span>
+      </button>
+      <div class="modal-visual" id="modalVisual"></div>
+      <div class="modal-caption">
+        <strong id="modalTitle"></strong>
+        <span id="modalPrice"></span>
+      </div>
+    </div>
+
+    <div class="admin-gate" id="adminGate" aria-hidden="true">
+      <form class="admin-card" id="adminLoginForm">
+        <div class="panel-header tight">
+          <div>
+            <span class="eyebrow">Accès</span>
+            <h2>Admin</h2>
+          </div>
+          <button class="icon-button" id="adminGateClose" type="button" aria-label="Fermer">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <label for="adminPassword">Mot de passe</label>
+        <input id="adminPassword" type="password" inputmode="numeric" autocomplete="current-password" required>
+        <button class="checkout-button" type="submit">Entrer</button>
+      </form>
+    </div>
+
+    <aside class="admin-panel" id="adminPanel" aria-labelledby="adminTitle" aria-hidden="true">
+      <div class="panel-header">
+        <div>
+          <span class="eyebrow">Gestion</span>
+          <h2 id="adminTitle">Produits</h2>
+        </div>
+        <button class="icon-button" id="adminClose" type="button" aria-label="Fermer le panneau admin">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+
+      <form class="product-form" id="productForm">
+        <input type="hidden" id="productId">
+        <label for="productName">Nom</label>
+        <input id="productName" type="text" maxlength="80" required>
+
+        <label for="productPrice">Prix</label>
+        <input id="productPrice" type="number" min="1" step="1" required>
+
+        <label for="productCategory">Catégorie</label>
+        <select id="productCategory" required></select>
+
+        <label for="productImage">URL image</label>
+        <input id="productImage" type="url" placeholder="https://...">
+
+        <div class="form-actions">
+          <button class="checkout-button" type="submit" id="productSubmit">Ajouter</button>
+          <button class="secondary-button" type="button" id="productCancel">Annuler</button>
+        </div>
+      </form>
+
+      <div class="admin-list" id="adminList"></div>
+    </aside>
+
+    <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="app.js?v=20260609" defer></script>
+  </body>
+</html>
